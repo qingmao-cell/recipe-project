@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npx prisma generate && npm run build",
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "DIRECT_URL": "@direct_url",
+    "OPENAI_API_KEY": "@openai_api_key"
+  }
+}
