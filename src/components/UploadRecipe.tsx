@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { compressImage, getCompressionInfo } from "@/utils/compressImage";
-import { useTranslations } from "next-intl";
 
 interface UploadRecipeProps {
   onSuccess?: (recipeId: string) => void;
@@ -31,7 +30,6 @@ export default function UploadRecipe({
   onSuccess,
   onError,
 }: UploadRecipeProps) {
-  const t = useTranslations('recipe');
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -84,7 +82,7 @@ export default function UploadRecipe({
       if (file.type.startsWith("image/")) {
         await processFile(file);
       } else {
-        onError?.(t('upload.dragImage'));
+        onError?.('请选择图片文件');
       }
     }
   };
@@ -95,7 +93,7 @@ export default function UploadRecipe({
   const processFile = async (file: File) => {
     // 验证文件类型
     if (!file.type.startsWith("image/")) {
-      onError?.(t('upload.selectImage'));
+      onError?.('请选择图片文件');
       return;
     }
 
@@ -250,17 +248,17 @@ export default function UploadRecipe({
         >
           <div className="text-6xl mb-4">📸</div>
           <h3 className="text-xl font-medium text-orange-800 mb-2">
-            {t('photoRecognition')}
+            拍照识别菜谱
           </h3>
           <p className="text-orange-600 mb-4">
-            {t('photoDescription')}
+            拍张照片，自动生成菜谱
           </p>
           <div className="text-sm text-orange-500 space-y-1">
-            <p>📱 {t('upload.supportPhone')}</p>
-            <p>📋 {t('upload.supportPaste')}</p>
-            <p>🖱️ {t('upload.supportDrag')}</p>
-            <p>🤖 {t('upload.aiRecognition')}</p>
-            <p>⚡ {t('upload.autoGenerate')}</p>
+            <p>📱 支持手机拍照上传</p>
+            <p>📋 支持复制粘贴图片</p>
+            <p>🖱️ 支持拖拽上传</p>
+            <p>🤖 AI智能识别</p>
+            <p>⚡ 自动生成信息</p>
           </div>
         </div>
       ) : (
@@ -279,7 +277,7 @@ export default function UploadRecipe({
           <div className="space-y-4">
             <div className="text-2xl">🔍</div>
             <h3 className="text-xl font-medium text-orange-800">
-              {t('recognizing')}
+              正在识别...
             </h3>
 
             {/* 进度条 */}
@@ -291,11 +289,11 @@ export default function UploadRecipe({
             </div>
 
             <div className="text-sm text-orange-600">
-              {progress < 20 && t('upload.preparing')}
-              {progress >= 20 && progress < 40 && t('upload.compressing')}
-              {progress >= 40 && progress < 60 && t('upload.analyzing')}
-              {progress >= 60 && progress < 80 && t('upload.extracting')}
-              {progress >= 80 && t('upload.saving')}
+              {progress < 20 && '准备中...'}
+              {progress >= 20 && progress < 40 && '压缩图片...'}
+              {progress >= 40 && progress < 60 && '分析内容...'}
+              {progress >= 60 && progress < 80 && '提取信息...'}
+              {progress >= 80 && '保存菜谱...'}
             </div>
           </div>
         </div>

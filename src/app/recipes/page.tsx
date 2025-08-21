@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Fuse from "fuse.js";
-import { useTranslations, useLocale } from "next-intl";
 import { parseTags } from "@/lib/tagUtils";
 import { TagListDisplay, TagDisplay } from "@/components/TagDisplay";
 
@@ -23,9 +22,8 @@ interface Recipe {
   steps?: any;
 }
 
-function RecipeCard({ recipe, locale }: { recipe: Recipe; locale: string }) {
+function RecipeCard({ recipe }: { recipe: Recipe }) {
   const [imageError, setImageError] = useState(false);
-  const t = useTranslations('RecipeList');
 
   // 占位插画列表 - 前端运行时随机选择
   const placeholders = [
@@ -83,7 +81,7 @@ function RecipeCard({ recipe, locale }: { recipe: Recipe; locale: string }) {
   const parseSourceInfo = getParseSourceLabel();
 
   return (
-    <Link href={`/${locale}/recipes/${recipe.id}`}>
+    <Link href={`/recipes/${recipe.id}`}>
       <div className="bg-white rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden cursor-pointer h-84">
         {/* 图片 */}
         <div className="relative h-48 bg-orange-100">
@@ -149,10 +147,6 @@ function RecipeCard({ recipe, locale }: { recipe: Recipe; locale: string }) {
 }
 
 export default function RecipesPage() {
-  const t = useTranslations('RecipeList');
-  const tDetail = useTranslations('RecipeDetail');
-  const tIngredients = useTranslations('Ingredients');
-  const locale = useLocale();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -236,7 +230,7 @@ export default function RecipesPage() {
       if (data.success) {
         setRecipes(data.recipes);
       } else {
-        setError(t('noRecipes'));
+        setError('暂无菜谱');
       }
     } catch (error) {
       setError('网络错误');
@@ -522,7 +516,7 @@ export default function RecipesPage() {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-            <p className="mt-4 text-orange-600">{t('loading')}</p>
+            <p className="mt-4 text-orange-600">加载中...</p>
           </div>
         </div>
       </div>
@@ -535,10 +529,10 @@ export default function RecipesPage() {
         {/* 头部 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-light text-orange-800 mb-4">
-            {t('title')}
+            菜谱收藏
           </h1>
           <p className="text-orange-600">
-            {t('totalRecipes', { count: recipes.length })}
+            共收录 {recipes.length} 道菜谱
           </p>
         </div>
 
@@ -548,7 +542,7 @@ export default function RecipesPage() {
           <div className="mb-6">
             <input
               type="text"
-              placeholder={t('searchPlaceholder')}
+              placeholder="搜索菜谱名称、食材、调料..."
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -565,7 +559,7 @@ export default function RecipesPage() {
 
           {/* 筛选模式切换 */}
           <div className="flex items-center gap-4 mb-4">
-            <span className="text-sm text-gray-600">{t('filterMode')}:</span>
+            <span className="text-sm text-gray-600">筛选模式:</span>
             <div className="flex gap-2">
               <button
                 onClick={() => {
@@ -602,20 +596,11 @@ export default function RecipesPage() {
             {allOptions.ingredients.length > 0 && (
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  {t('ingredients')}
+                  食材
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {allOptions.ingredients.slice(0, 20).map((ing) => {
-                    // Try to translate ingredient name, fallback to original
-                    let displayName = ing;
-                    try {
-                      const translated = tIngredients(ing as any);
-                      if (translated && !translated.startsWith('Ingredients.')) {
-                        displayName = translated;
-                      }
-                    } catch {
-                      // Keep original name if translation fails
-                    }
+                    const displayName = ing;
                     return (
                       <button
                         key={ing}
@@ -638,20 +623,11 @@ export default function RecipesPage() {
             {allOptions.seasonings.length > 0 && (
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  {t('seasonings')}
+                  调味料
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {allOptions.seasonings.slice(0, 15).map((seas) => {
-                    // Try to translate seasoning name, fallback to original
-                    let displayName = seas;
-                    try {
-                      const translated = tIngredients(seas as any);
-                      if (translated && !translated.startsWith('Ingredients.')) {
-                        displayName = translated;
-                      }
-                    } catch {
-                      // Keep original name if translation fails
-                    }
+                    const displayName = seas;
                     return (
                       <button
                         key={seas}
@@ -674,20 +650,11 @@ export default function RecipesPage() {
             {allOptions.tools.length > 0 && (
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  {t('tools')}
+                  厨具
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {allOptions.tools.map((tool) => {
-                    // Try to translate tool name, fallback to original
-                    let displayName = tool;
-                    try {
-                      const translated = tIngredients(tool as any);
-                      if (translated && !translated.startsWith('Ingredients.')) {
-                        displayName = translated;
-                      }
-                    } catch {
-                      // Keep original name if translation fails
-                    }
+                    const displayName = tool;
                     return (
                       <button
                         key={tool}
@@ -710,7 +677,7 @@ export default function RecipesPage() {
             {allOptions.tags.length > 0 && (
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  {t('tags')}
+                  标签
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {allOptions.tags.slice(0, 20).map((tag) => (
@@ -738,7 +705,7 @@ export default function RecipesPage() {
                 onClick={clearAllFilters}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
               >
-                {t('clearAllFilters')}
+                清除所有筛选
               </button>
             </div>
           )}
@@ -748,13 +715,13 @@ export default function RecipesPage() {
         <div className="flex justify-between items-center mb-6">
           <div className="text-orange-700">
             {hasActiveFilters && (
-              <span>{t('foundRecipes', { count: filteredRecipes.length })}</span>
+              <span>找到 {filteredRecipes.length} 道菜谱</span>
             )}
           </div>
           <div className="flex gap-4">
-            <Link href={`/${locale}/recipes/create`}>
+            <Link href="/recipes/create">
               <button className="px-6 py-3 bg-gradient-to-r from-orange-400 to-amber-400 text-white rounded-full hover:from-orange-500 hover:to-amber-500 transition-all duration-300 shadow-md hover:shadow-lg">
-                ✨ {t('createRecipe')}
+                ✨ 创建菜谱
               </button>
             </Link>
           </div>
@@ -765,14 +732,14 @@ export default function RecipesPage() {
           <div className="text-center py-16">
             <p className="text-orange-600 text-xl">
               {hasActiveFilters
-                ? t('noMatchingRecipes')
-                : t('noRecipesYet')}
+                ? '没有找到匹配的菜谱'
+                : '还没有菜谱，快来添加第一道菜谱吧！'}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredRecipes.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} locale={locale} />
+              <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
           </div>
         )}

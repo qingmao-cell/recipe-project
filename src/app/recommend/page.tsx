@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useTranslations, useLocale } from "next-intl";
 // import LocaleSwitcher from "@/components/LocaleSwitcher"; // 暂时隐藏语言切换
 
 interface Recipe {
@@ -28,9 +27,6 @@ interface FridgeItem {
 }
 
 export default function RecommendPage() {
-  const t = useTranslations('Recommend');
-  const tIngredients = useTranslations('Ingredients');
-  const locale = useLocale();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [fridgeItems, setFridgeItems] = useState<FridgeItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +96,7 @@ export default function RecommendPage() {
     if (random) {
       setSelectedRecipe(random);
     } else {
-      alert(t('noRecipesAlert'));
+      alert('暂无菜谱可推荐');
     }
   };
 
@@ -224,7 +220,7 @@ export default function RecommendPage() {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-            <p className="mt-4 text-orange-600">{t('loading')}</p>
+            <p className="mt-4 text-orange-600">加载中...</p>
           </div>
         </div>
       </div>
@@ -251,10 +247,10 @@ export default function RecommendPage() {
         <div className="text-center mb-12">
           <div className="inline-block bg-white/95 backdrop-blur-md rounded-2xl px-8 py-6 shadow-lg">
             <h1 className="text-4xl md:text-5xl font-bold text-orange-900 mb-4">
-              {t('title')}
+              今天吃什么
             </h1>
             <p className="text-lg text-orange-700">
-              {t('subtitle')}
+              基于你的食材智能推荐菜谱
             </p>
           </div>
 
@@ -264,14 +260,14 @@ export default function RecommendPage() {
               onClick={handleRandomRecommend}
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl font-medium"
             >
-              {t('randomRecommend')}
+              随机推荐
             </button>
 
             <Link
-              href={`/${locale}/recipes`}
+              href="/recipes"
               className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-full hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl font-medium"
             >
-              {t('viewCollection')}
+              浏览收藏
             </Link>
           </div>
         </div>
@@ -280,7 +276,7 @@ export default function RecommendPage() {
         {selectedRecipe && (
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-orange-800 mb-6 text-center">
-              {t('todayRecommend')}
+              今日推荐
             </h2>
             <div className="max-w-2xl mx-auto">
               <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -296,13 +292,13 @@ export default function RecommendPage() {
                     <div className="w-full h-full flex items-center justify-center text-orange-300">
                       <div className="text-center">
                         <div className="text-6xl mb-4">🍽️</div>
-                        <div className="text-lg">{t('noImage')}</div>
+                        <div className="text-lg">暂无图片</div>
                       </div>
                     </div>
                   )}
                   <div className="absolute top-4 right-4">
                     <span className="px-3 py-1 bg-orange-500 text-white text-sm rounded-full">
-                      {t('randomTag')}
+                      随机推荐
                     </span>
                   </div>
                 </div>
@@ -311,7 +307,7 @@ export default function RecommendPage() {
                     {selectedRecipe.title}
                   </h3>
                   <div className="flex items-center justify-between text-sm text-orange-600 mb-4">
-                    <span>{t('source')}: {selectedRecipe.domain || t('unknown')}</span>
+                    <span>来源: {selectedRecipe.domain || '未知'}</span>
                     <span>
                       {new Date(selectedRecipe.createdAt).toLocaleDateString(
                         "zh-CN"
@@ -320,16 +316,16 @@ export default function RecommendPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <Link
-                      href={`/${locale}/recipes/${selectedRecipe.id}`}
+                      href={`/recipes/${selectedRecipe.id}`}
                       className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
                     >
-                      {t('viewDetails')} →
+                      查看详情 →
                     </Link>
                     <button
                       onClick={() => setSelectedRecipe(null)}
                       className="px-4 py-2 text-orange-600 hover:text-orange-800 transition-colors"
                     >
-                      {t('changeOne')}
+                      换一个
                     </button>
                   </div>
                 </div>
@@ -342,7 +338,7 @@ export default function RecommendPage() {
         {ingredientRecommendations.length > 0 && (
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-orange-800 mb-6 text-center">
-              {t('ingredientRecommend')}
+              基于食材的推荐
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {ingredientRecommendations.map(({ recipe, matchRate }) => (
@@ -362,13 +358,13 @@ export default function RecommendPage() {
                       <div className="w-full h-full flex items-center justify-center text-orange-300">
                         <div className="text-center">
                           <div className="text-4xl mb-2">🍽️</div>
-                          <div className="text-sm">{t('noImage')}</div>
+                          <div className="text-sm">暂无图片</div>
                         </div>
                       </div>
                     )}
                     <div className="absolute top-3 right-3">
                       <span className="px-2 py-1 bg-green-500 text-white text-xs rounded-full">
-                        {Math.round(matchRate * 100)}% {t('match')}
+                        {Math.round(matchRate * 100)}% 匹配
                       </span>
                     </div>
                   </div>
@@ -377,16 +373,16 @@ export default function RecommendPage() {
                       {recipe.title}
                     </h3>
                     <div className="flex items-center justify-between text-sm text-orange-600 mb-3">
-                      <span>{recipe.domain || t('unknown')}</span>
+                      <span>{recipe.domain || '未知'}</span>
                       <span>
-                        {Math.round(matchRate * 100)}% {t('match')}
+                        {Math.round(matchRate * 100)}% 匹配
                       </span>
                     </div>
                     <Link
-                      href={`/${locale}/recipes/${recipe.id}`}
+                      href={`/recipes/${recipe.id}`}
                       className="block w-full text-center px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors"
                     >
-                      {t('viewRecipe')}
+                      查看菜谱
                     </Link>
                   </div>
                 </div>
@@ -401,7 +397,7 @@ export default function RecommendPage() {
           {selectedIngredients.size > 0 && (
             <div className="mb-6 text-center relative z-10">
               <h3 className="text-base font-medium text-orange-800 mb-3">
-                📋 {t('selected')}（{selectedIngredients.size}）
+                📋 已选择（{selectedIngredients.size}）
               </h3>
               <div className="flex flex-wrap gap-2 justify-center">
                 {Array.from(selectedIngredients).map((name) => (
@@ -421,28 +417,28 @@ export default function RecommendPage() {
             {/* 蔬菜/维生素 */}
             <div>
               <h3 className="mb-2 text-green-700 font-semibold">
-                🥦 {t('vegetables')}
+                🥦 蔬菜
               </h3>
               <div className="flex flex-wrap gap-2">
                 {[
-                  tIngredients('potato'),
-                  tIngredients('carrot'),
-                  tIngredients('onion'),
-                  tIngredients('greenPepper'),
-                  tIngredients('tomato'),
-                  tIngredients('cucumber'),
-                  tIngredients('cabbage'),
-                  tIngredients('spinach'),
-                  tIngredients('celery'),
-                  tIngredients('chives'),
-                  tIngredients('eggplant'),
-                  tIngredients('winterMelon'),
-                  tIngredients('broccoli'),
-                  tIngredients('choySum'),
-                  tIngredients('bokChoy'),
-                  tIngredients('beanSprouts'),
-                  tIngredients('yellowChives'),
-                  tIngredients('garlicSprouts'),
+                  '土豆',
+                  '胡萝卜',
+                  '洋葱',
+                  '青椒',
+                  '西红柿',
+                  '黄瓜',
+                  '包菜',
+                  '菠菜',
+                  '芹菜',
+                  '韭菜',
+                  '茄子',
+                  '冬瓜',
+                  '西兰花',
+                  '菜心',
+                  '小白菜',
+                  '豆芽菜',
+                  '韭黄',
+                  '蒜苗',
                 ].map((name) => (
                   <TagButton
                     key={name}
@@ -456,21 +452,21 @@ export default function RecommendPage() {
 
             {/* 蛋白质 */}
             <div>
-              <h3 className="mb-2 text-red-700 font-semibold">🥩 {t('protein')}</h3>
+              <h3 className="mb-2 text-red-700 font-semibold">🥩 蛋白质</h3>
               <div className="flex flex-wrap gap-2">
                 {[
-                  tIngredients('egg'),
-                  tIngredients('chicken'),
-                  tIngredients('pork'),
-                  tIngredients('beef'),
-                  tIngredients('fish'),
-                  tIngredients('shrimp'),
-                  tIngredients('tofu'),
-                  tIngredients('milk'),
-                  tIngredients('driedTofu'),
-                  tIngredients('sausage'),
-                  tIngredients('bacon'),
-                  tIngredients('ham'),
+                  '鸡蛋',
+                  '鸡肉',
+                  '猪肉',
+                  '牛肉',
+                  '鱼肉',
+                  '虾仁',
+                  '豆腐',
+                  '牵奶',
+                  '豆干',
+                  '香肠',
+                  '培根',
+                  '火腿',
                 ].map((name) => (
                   <TagButton
                     key={name}
@@ -485,10 +481,10 @@ export default function RecommendPage() {
             {/* 淀粉/主食 */}
             <div>
               <h3 className="mb-2 text-yellow-700 font-semibold">
-                🍚 {t('carbs')}
+                🍚 主食
               </h3>
               <div className="flex flex-wrap gap-2">
-                {[tIngredients('rice'), tIngredients('noodles'), tIngredients('bread'), tIngredients('instantNoodles'), tIngredients('mantou'), tIngredients('dumpling'), tIngredients('riceCake')].map(
+                {['米饭', '面条', '面包', '方便面', '馁头', '饺子', '年糕'].map(
                   (name) => (
                     <TagButton
                       key={name}
@@ -503,22 +499,22 @@ export default function RecommendPage() {
 
             {/* 调味 */}
             <div>
-              <h3 className="mb-2 text-purple-700 font-semibold">🧂 {t('seasoning')}</h3>
+              <h3 className="mb-2 text-purple-700 font-semibold">🧂 调味料</h3>
               <div className="flex flex-wrap gap-2">
                 {[
-                  tIngredients('garlic'),
-                  tIngredients('ginger'),
-                  tIngredients('scallion'),
-                  tIngredients('soySauce'),
-                  tIngredients('salt'),
-                  tIngredients('sugar'),
-                  tIngredients('vinegar'),
-                  tIngredients('cookingWine'),
-                  tIngredients('chili'),
-                  tIngredients('sichuanPepper'),
-                  tIngredients('starAnise'),
-                  tIngredients('cinnamon'),
-                  tIngredients('coriander'),
+                  '大蒜',
+                  '生姜',
+                  '大葱',
+                  '生抽',
+                  '盐',
+                  '糖',
+                  '醉',
+                  '料酒',
+                  '辣椒',
+                  '花椒',
+                  '八角',
+                  '桂皮',
+                  '香菜',
                 ].map((name) => (
                   <TagButton
                     key={name}
@@ -532,9 +528,9 @@ export default function RecommendPage() {
 
             {/* 厨具 */}
             <div>
-              <h3 className="mb-2 text-gray-700 font-semibold">🍳 {t('cookware')}</h3>
+              <h3 className="mb-2 text-gray-700 font-semibold">🍳 厨具</h3>
               <div className="flex flex-wrap gap-2">
-                {[tIngredients('wok'), tIngredients('steamer'), tIngredients('oven'), tIngredients('microwave'), tIngredients('riceCooker'), tIngredients('airFryer')].map(
+                {['烒锅', '蒸锅', '烤箱', '微波炉', '电饭煯', '空气炸锅'].map(
                   (name) => (
                     <TagButton
                       key={name}
@@ -555,12 +551,12 @@ export default function RecommendPage() {
             <div className="inline-block bg-white/90 backdrop-blur-sm rounded-2xl px-8 py-6 shadow-sm">
               <div className="text-6xl mb-4">👨‍🍳</div>
               <h3 className="text-xl font-medium text-orange-800 mb-4">
-                {t('letsSeeCombination')}
+                来看看组合出的菜谱吧！
               </h3>
               <p className="text-orange-600">
                 {ingredientRecommendations.length > 0
-                  ? t('foundRecipes', { count: ingredientRecommendations.length })
-                  : t('tryMoreIngredients')}
+                  ? `找到 ${ingredientRecommendations.length} 道相关菜谱`
+                  : '试试选择更多食材吧！'}
               </p>
             </div>
           </div>

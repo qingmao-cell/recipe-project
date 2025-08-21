@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { PRESET_TAGS } from "@/lib/tagUtils";
-import { useTranslations } from "next-intl";
 import { getTagDisplayKey } from "@/lib/tagDisplay";
 
 interface TagEditorProps {
@@ -16,8 +15,6 @@ export default function TagEditor({
   onChange,
   className = "",
 }: TagEditorProps) {
-  const t = useTranslations('TagEditor');
-  const tTags = useTranslations('Tags');
   const [inputValue, setInputValue] = useState("");
   const [localTags, setLocalTags] = useState<string[]>(tags);
   const [showPresets, setShowPresets] = useState(false);
@@ -86,14 +83,13 @@ export default function TagEditor({
     <div className={`space-y-4 ${className}`}>
       {/* 标签输入区域 */}
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">{t('tags')}</label>
+        <label className="block text-sm font-medium text-gray-700">标签</label>
 
         {/* 已有关联标签 */}
         {localTags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {localTags.map((tag) => {
-              const { isPreset, key } = getTagDisplayKey(tag);
-              const displayText = isPreset ? tTags(key as any) : tag;
+              const displayText = tag;
               
               return (
                 <span
@@ -123,7 +119,7 @@ export default function TagEditor({
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onBlur={handleInputBlur}
-            placeholder={t('inputPlaceholder')}
+            placeholder="输入标签名称，回车确认"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
           />
         </div>
@@ -132,13 +128,13 @@ export default function TagEditor({
       {/* 预设标签面板 */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">{t('presetTags')}</span>
+          <span className="text-sm font-medium text-gray-700">预设标签</span>
           <button
             type="button"
             onClick={() => setShowPresets(!showPresets)}
             className="text-sm text-orange-600 hover:text-orange-800 transition-colors"
           >
-            {showPresets ? t('collapse') : t('expand')}
+            {showPresets ? '收起' : '展开'}
           </button>
         </div>
 
@@ -147,11 +143,11 @@ export default function TagEditor({
             {/* 场景/心情 */}
             <div>
               <h4 className="text-xs font-medium text-gray-600 mb-2 uppercase tracking-wide">
-                {t('scenario')}
+                场景
               </h4>
               <div className="flex flex-wrap gap-2">
                 {PRESET_TAGS.scenario.map((tagKey) => {
-                  const tagDisplay = tTags(tagKey as any);
+                  const tagDisplay = tagKey;
                   return (
                     <button
                       key={tagKey}
@@ -174,11 +170,11 @@ export default function TagEditor({
             {/* 风味 */}
             <div>
               <h4 className="text-xs font-medium text-gray-600 mb-2 uppercase tracking-wide">
-                {t('flavor')}
+                口味
               </h4>
               <div className="flex flex-wrap gap-2">
                 {PRESET_TAGS.flavor.map((tagKey) => {
-                  const tagDisplay = tTags(tagKey as any);
+                  const tagDisplay = tagKey;
                   return (
                     <button
                       key={tagKey}
@@ -201,11 +197,11 @@ export default function TagEditor({
             {/* 主食/能量 */}
             <div>
               <h4 className="text-xs font-medium text-gray-600 mb-2 uppercase tracking-wide">
-                {t('staple')}
+                主食
               </h4>
               <div className="flex flex-wrap gap-2">
                 {PRESET_TAGS.staple.map((tagKey) => {
-                  const tagDisplay = tTags(tagKey as any);
+                  const tagDisplay = tagKey;
                   return (
                     <button
                       key={tagKey}
@@ -228,11 +224,11 @@ export default function TagEditor({
             {/* 厨具 */}
             <div>
               <h4 className="text-xs font-medium text-gray-600 mb-2 uppercase tracking-wide">
-                {t('cookware')}
+                厨具
               </h4>
               <div className="flex flex-wrap gap-2">
                 {PRESET_TAGS.cookware.map((tagKey) => {
-                  const tagDisplay = tTags(tagKey as any);
+                  const tagDisplay = tagKey;
                   return (
                     <button
                       key={tagKey}

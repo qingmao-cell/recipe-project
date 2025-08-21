@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { CondenseResponse } from "@/types/condense";
@@ -28,8 +27,6 @@ interface Recipe {
 
 export default function RecipeDetailPage() {
   const params = useParams();
-  const t = useTranslations('RecipeDetail');
-  const locale = useLocale();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -270,7 +267,7 @@ export default function RecipeDetailPage() {
                 {getTags().length > 0 && (
                   <div className="mt-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">
-                      {t('tags')}
+                      标签
                     </h4>
                     <TagListDisplay 
                       tags={getTags()}
