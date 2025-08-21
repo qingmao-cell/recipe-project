@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// 结构化菜谱模型
+model Recipe {
+  id          String   @id @default(uuid())
+  title       String   @default("未获取到标题")
+  imageUrl    String?  @db.Text
+  sourceUrl   String   @unique @db.Text
+  ingredients String[] // 原材料（规范化后）
+  seasonings  String[] // 调味（规范化后）
+  tools       String[] // 厨具（规范化后）
+  steps       Json?
+  tags        String[] // 主题标签（"维生素/蛋白质/淀粉/酸/辣/快手菜/…"）
+  nutrition   String?  @db.Text
+  description String?  @db.Text
+  domain      String?  @db.Text
+  parseSource String?  // 解析来源: "jsonld"|"microdata"|"readability"|"ai-refine"|"fallback"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("recipes")
+}
+
+// 冰箱食材模型
+model FridgeItem {
+  id         String    @id @default(cuid())
+  name       String    // 食材名称
+  quantity   String    // 数量
+  expiryDate DateTime? // 保质期
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("fridge_items")
+} 
