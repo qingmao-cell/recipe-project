@@ -69,7 +69,6 @@ const ALL_TAG_MAPPINGS: Record<string, string> = {
   "硬菜": "hardDish",
   "経典菜": "classicDish",
   "招牌菜": "signatureDish",
-  "簡単料理": "easyDish",
   "日本料理": "japaneseCuisine",
   "中華料理": "chineseCuisine",
   "西洋料理": "westernCuisine",

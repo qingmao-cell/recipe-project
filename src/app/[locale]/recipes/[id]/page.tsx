@@ -143,8 +143,9 @@ export default function RecipeDetailPage() {
     }
     if (typeof recipe.steps === 'object' && recipe.steps !== null) {
       // Handle structured steps format
-      if (recipe.steps.steps) {
-        return recipe.steps.steps;
+      const stepsObj = recipe.steps as any;
+      if (stepsObj.steps) {
+        return stepsObj.steps;
       }
       // Handle array-like object
       return Object.values(recipe.steps);
