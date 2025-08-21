@@ -1,17 +1,18 @@
-import createMiddleware from 'next-intl/middleware';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export default createMiddleware({
-  // A list of all locales that are supported
-  locales: ['zh', 'ja'],
-
-  // Used when no locale matches
-  defaultLocale: 'zh',
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
   
-  // Disable automatic locale detection
-  localeDetection: false
-});
+  // 如果访问根路径，重定向到 /zh
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/zh', request.url));
+  }
+  
+  // 其他路径正常通过
+  return NextResponse.next();
+}
 
 export const config = {
-  // Match only internationalized pathnames
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+  matcher: '/'
 };
