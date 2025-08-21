@@ -1,4 +1,4 @@
 {
-  "buildCommand": "prisma generate && next build",
-  "outputDirectory": ".next"
+  "buildCommand": "npm run build:vercel",
+  "framework": null
 }
