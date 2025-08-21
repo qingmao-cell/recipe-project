@@ -1,5 +1,7 @@
 {
   "buildCommand": "npx prisma generate && npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
   "env": {
     "DATABASE_URL": "@database_url",
     "DIRECT_URL": "@direct_url",

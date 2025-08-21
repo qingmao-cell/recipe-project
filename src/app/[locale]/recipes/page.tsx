@@ -757,11 +757,6 @@ export default function RecipesPage() {
                 ✨ {t('createRecipe')}
               </button>
             </Link>
-            <Link href={`/${locale}/test-ocr`}>
-              <button className="px-6 py-3 bg-gradient-to-r from-purple-400 to-pink-400 text-white rounded-full hover:from-purple-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg">
-                📷 {t('photoOCR')}
-              </button>
-            </Link>
           </div>
         </div>
 
