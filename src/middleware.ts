@@ -6,15 +6,12 @@ export default createMiddleware({
 
   // Used when no locale matches
   defaultLocale: 'zh',
-
-  // The prefix for the locale in the URL
-  localePrefix: 'as-needed'
+  
+  // Disable automatic locale detection
+  localeDetection: false
 });
 
 export const config = {
   // Match only internationalized pathnames
-  matcher: [
-    '/',
-    '/(zh|ja)/:path*'
-  ]
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 };
